@@ -1,0 +1,55 @@
+# Используем стабильную версию Node.js
+FROM node:24-alpine AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN corepack enable
+
+# Install dependencies only when needed
+FROM base AS builder
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+
+# Копируем файлы манифестов для установки зависимостей
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+
+# 2. Используем cache mount для папки pnpm store. 
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm fetch --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+# Копируем исходники и конфигурации
+COPY shared_zvonex-crm ./shared_zvonex-crm
+COPY backend_zvonex-crm ./backend_zvonex-crm
+
+# Сборка через фильтр pnpm
+RUN pnpm --filter @zvonex/shared run build
+RUN pnpm --filter zvonex-backend run build
+
+# Оптимизация
+FROM builder AS pruner
+
+WORKDIR /app
+
+RUN pnpm --filter zvonex-backend --prod --shamefully-hoist deploy /pruned
+
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nestjs
+
+COPY --from=pruner --chown=nestjs:nodejs /pruned ./
+COPY --from=builder --chown=nestjs:nodejs /app/backend_zvonex-crm/dist ./dist
+
+
+USER nestjs
+
+EXPOSE 3000

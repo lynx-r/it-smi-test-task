@@ -1,0 +1,25 @@
+module.exports = {
+  rootDir: ".",
+  moduleFileExtensions: ["js", "json", "ts"],
+  extensionsToTreatAsEsm: [".ts"],
+  modulePaths: ["<rootDir>"],
+  testMatch: ["**/*.spec.ts"],
+  testEnvironment: "node",
+  maxWorkers: 1,
+  coverageDirectory: "./coverage",
+  coverageReporters: ["html", "lcov", "text-summary"],
+  coveragePathIgnorePatterns: ["<rootDir>/swagger", "<rootDir>/tests/utils"],
+  transformIgnorePatterns: ["/node_modules/\\.pnpm/(?!uuid@)"],
+  transform: {
+    "^.+\\.(t|j)s$": ["ts-jest", { tsconfig: "tsconfig.spec.json" }],
+  },
+  moduleNameMapper: {
+    "^@src/(.*)$": "<rootDir>/src/$1",
+    "^@tests/(.*)$": "<rootDir>/tests/$1",
+    "^@domain/(.*)$": "<rootDir>/src/domain/$1",
+    "^@application/(.*)$": "<rootDir>/src/application/$1",
+    "^@infrastructure/(.*)$": "<rootDir>/src/infrastructure/$1",
+    "^@presentation/(.*)$": "<rootDir>/src/presentation/$1",
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+  },
+}

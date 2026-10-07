@@ -1,0 +1,75 @@
+services:
+  app:
+    build:
+      context: ../../
+      dockerfile: docker/develop/Dockerfile.dev
+    container_name: nest-clean-core-dev-app
+    command: sh -c "pnpm exec prisma generate && pnpm exec prisma migrate deploy && pnpm run start:dev:docker"
+    ports:
+      - "3006:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ".env.docker.dev"
+
+  postgres:
+    image: postgres:18-alpine
+    container_name: nest-clean-core-dev-postgres
+    env_file:
+      - .docker.dev.env
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg_data:/var/lib/postgresql
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  pgadmin:
+    image: dpage/pgadmin4:9.8
+    ports:
+      - 5050:80
+    env_file:
+      - .docker.dev.env
+    configs:
+      - source: pgadmin-pgpass
+        target: /config/pgpass
+        uid: "5050"
+        gid: "5050"
+        mode: 0400
+      - source: pgadmin-servers
+        target: /pgadmin4/servers.json
+        mode: 0444
+
+configs:
+  pgadmin-servers:
+    content: |
+      {
+        "Servers": {
+          "1": {
+            "Name": "Local Postgres",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "postgres",
+            "Username": "postgres",
+            "PassFile": "/config/pgpass"
+          }
+        }
+      }
+
+  pgadmin-pgpass:
+    content: |
+      postgres:5432:*:postgres:postgres
+
+volumes:
+  pg_data:

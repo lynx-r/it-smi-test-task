@@ -1,0 +1,73 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2021",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "types": [
+      "node",
+      "jest"
+    ],
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@domain/*": [
+        "./src/domain/*"
+      ],
+      "@infrastructure/*": [
+        "./src/infrastructure/*"
+      ],
+      "@application/*": [
+        "./src/application/*"
+      ],
+      "@presentation/*": [
+        "./src/presentation/*"
+      ],
+      "@src/*": [
+        "./src/*"
+      ],
+      "@tests/*": [
+        "./tests/*"
+      ]
+    },
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "typedocOptions": {
+    "out": "doc",
+    "exclude": "**/node_modules/**",
+    "markdownItOptions": {
+      "html": true,
+      "linkify": true,
+      "typographer": true
+    }
+  },
+  "include": [
+    "src/**/*",
+    "scripts/**/*",
+    "webpack-hmr.config.js",
+    "prisma.config.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "doc",
+    "coverage",
+    "tests",
+    "swagger"
+  ]
+}

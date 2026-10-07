@@ -1,0 +1,118 @@
+{
+  "name": "nest-js-core-clean",
+  "version": "1.0.0",
+  "description": "NestJs Core Clean Architecture",
+  "author": "Arash Alfooneh",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky",
+    "cz": "cz",
+    "lint": "eslint \"{src,apps,libs,tests}/**/*.ts\" --fix -f stylish",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "prisma:studio:dev": "env-cmd -f ./.env.dev pnpm prisma studio",
+    "prisma:generate:dev": "env-cmd -f ./.env.dev prisma generate",
+    "prisma:migrate:dev": "env-cmd -f ./.env.dev prisma migrate dev",
+    "prisma:migrate:reset": "env-cmd -f ./.env.dev prisma migrate reset",
+    "prisma:push:dev": "env-cmd -f ./.env.dev prisma db push",
+    "prisma:seed:dev": "env-cmd -f ./.env.dev prisma db seed",
+    "prisma:generate:test": "env-cmd -f ./.env.test prisma generate",
+    "prisma:migrate:test": "env-cmd -f ./.env.test prisma migrate dev",
+    "prisma:push:test": "env-cmd -f ./.env.test prisma db push",
+    "start:build": "env-cmd -f ./.env.prod nest build",
+    "start:prod": "env-cmd -f ./.env.prod node dist/main.js",
+    "start:dev": "env-cmd -f ./.env.dev nest start --webpack --webpackPath ./webpack-hmr.config.js --watch",
+    "start:dev:swc": "env-cmd -f ./.env.dev nest start -b swc --watch",
+    "start:dev:docker": "nest start --webpack --webpackPath ./webpack-hmr.config.js --watch",
+    "api": "pnpm exec ts-node scripts/zeus.ts",
+    "swagger": "env-cmd -f ./.env.dev pnpm exec ts-node scripts/generate-api.ts",
+    "commit": "cz"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.5.1",
+    "@as-integrations/express5": "^1.1.2",
+    "@nestjs/apollo": "^13.4.5",
+    "@nestjs/common": "^11.2.7",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.2.7",
+    "@nestjs/graphql": "^13.4.2",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/platform-express": "^11.1.21",
+    "@nestjs/throttler": "^6.5.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "0.14.2",
+    "clean-deep": "^3.4.0",
+    "env-cmd": "10.1.0",
+    "graphql": "^16.14.2",
+    "pg": "^8.20.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "swagger-typescript-api": "13.9.1",
+    "uuid": "^11.1.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@nestjs/cli": "^11.0.21",
+    "@nestjs/swagger": "11.1.1",
+    "@nestjs/testing": "^11.1.21",
+    "@swc/cli": "^0.8.1",
+    "@swc/core": "^1.15.43",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.19.19",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^18.0.0",
+    "axios": "^1.18.1",
+    "commitizen": "^4.3.1",
+    "commitlint-config-gitmoji": "^2.3.1",
+    "cz-customizable": "^7.5.4",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
+    "graphql-zeus": "^7.2.1",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "lint-staged": "^17.0.7",
+    "prettier": "3.5.3",
+    "prisma": "^7.8.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "ts-jest": "^29.4.9",
+    "ts-loader": "^9.5.7",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.59.3",
+    "webpack": "^5.106.2",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "chokidar": "5.0.0",
+      "@apollo/server": "4.0.0"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": ".cz-config.js"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "tests/**/*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
